@@ -1,52 +1,157 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hi-Tech Mart</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-        header { background: #35424a; color: #ffffff; padding: 20px 0; text-align: center; }
-        nav { margin: 20px; }
-        nav a { margin: 0 15px; color: #35424a; text-decoration: none; }
-        .container { width: 80%; margin: auto; overflow: hidden; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin: 10px 0; }
-        button { background: #35424a; color: white; padding: 10px 15px; border: none; cursor: pointer; }
-        .product { border: 1px solid #ddd; margin: 10px; padding: 10px; background: white; }
-    </style>
+<meta charset="UTF-8">
+<title>Hi-Tech Mart</title>
+<style>
+body{
+    font-family: Arial;
+    margin:0;
+    background:#f4f4f4;
+}
+header{
+    background:#2c3e50;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+.container{
+    width:90%;
+    margin:auto;
+    margin-top:20px;
+}
+.card{
+    background:white;
+    padding:20px;
+    margin:10px;
+    border-radius:8px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+input{
+    padding:10px;
+    margin:5px 0;
+    width:100%;
+}
+button{
+    padding:10px;
+    background:#3498db;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+button:hover{
+    background:#2980b9;
+}
+.product{
+    display:inline-block;
+    width:30%;
+    margin:1%;
+    vertical-align:top;
+}
+img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+}
+.hidden{
+    display:none;
+}
+.logout{
+    float:right;
+    background:red;
+}
+</style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Hi-Tech Mart</h1>
-    </header>
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">Products</a>
-        <a href="#">Contact</a>
-    </nav>
-    <div class="container">
-        <section>
-            <h2>Login</h2>
-            <form>
-                <input type="text" placeholder="Username" required>
-                <input type="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        </section>
-        <section>
-            <h2>Product Display</h2>
-            <div class="product">
-                <h3>Product Name 1</h3>
-                <p>Description of product 1.</p>
-                <p>Price: $XX.XX</p>
-            </div>
-            <div class="product">
-                <h3>Product Name 2</h3>
-                <p>Description of product 2.</p>
-                <p>Price: $XX.XX</p>
-            </div>
-            <!-- Add more products as necessary -->
-        </section>
+
+<header>
+    <span id="welcomeText">Hi-Tech Mart</span>
+    <button class="logout hidden" onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="card">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Enter Username">
+    <input type="password" id="password" placeholder="Enter Password">
+    <button onclick="login()">Login</button>
+    <p id="error" style="color:red;"></p>
+</div>
+
+<!-- HOME PAGE -->
+<div id="homePage" class="hidden">
+    <div class="card">
+        <h2>Welcome to Hi-Tech Mart</h2>
+        <p>Explore our latest products below.</p>
     </div>
+
+    <div id="products"></div>
+</div>
+
+</div>
+
+<script>
+// Sample user
+const demoUser = {
+    username: "admin",
+    password: "1234"
+};
+
+// Products
+const productList = [
+    {name:"Laptop", price:"₹45,000", image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8"},
+    {name:"Mobile", price:"₹15,000", image:"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9"},
+    {name:"Headphones", price:"₹2,000", image:"https://images.unsplash.com/photo-1518443895914-4c6b6b2e1d3a"},
+    {name:"Smart Watch", price:"₹3,500", image:"https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b"},
+    {name:"Keyboard", price:"₹1,200", image:"https://images.unsplash.com/photo-1515879218367-8466d910aaa4"},
+    {name:"Mouse", price:"₹800", image:"https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04"}
+];
+
+function login(){
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if(username === demoUser.username && password === demoUser.password){
+        localStorage.setItem("loggedIn","true");
+        showHome();
+    }else{
+        document.getElementById("error").innerText = "Invalid Login!";
+    }
+}
+
+function logout(){
+    localStorage.removeItem("loggedIn");
+    location.reload();
+}
+
+function showHome(){
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("homePage").classList.remove("hidden");
+    document.querySelector(".logout").classList.remove("hidden");
+    document.getElementById("welcomeText").innerText = "Welcome Admin";
+
+    const productDiv = document.getElementById("products");
+    productDiv.innerHTML = "";
+
+    productList.forEach(product=>{
+        productDiv.innerHTML += `
+        <div class="card product">
+            <img src="${product.image}">
+            <h3>${product.name}</h3>
+            <p>${product.price}</p>
+            <button>Buy Now</button>
+        </div>
+        `;
+    });
+}
+
+// Auto login check
+if(localStorage.getItem("loggedIn") === "true"){
+    showHome();
+}
+</script>
+
 </body>
 </html>
